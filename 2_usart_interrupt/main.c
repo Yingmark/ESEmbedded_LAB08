@@ -100,12 +100,20 @@ void usart1_handler(void)
 
 	if(READ_BIT(USART1_BASE + USART_SR_OFFSET, RXNE_BIT) == 1)
 	{
-
+		blink_count(LED_ORANGE, 1);
 		ch = usart1_receive_char();
 
 		if (ch == '\r')
 			usart1_send_char('\n');
 
 		usart1_send_char(ch);
+	}
+	if(READ_BIT(USART1_BASE + USART_SR_OFFSET, ORE_BIT) == 1)
+	{
+		blink_count(LED_RED, 1);
+		char *ORE = "ERROR\r\n";
+		while (*ORE != '\0');
+		usart1_send_char(*ORE++);
+		return (char)REG(USART1_BASE + USART_DR_OFFSET);
 	}
 }
